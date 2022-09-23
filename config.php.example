@@ -1,0 +1,11 @@
+<?php
+
+define('PHPMQ_DB_HOST', 'localhost');
+define('PHPMQ_DB_USER', 'admin');
+define('PHPMQ_DB_PASS', '');
+define('PHPMQ_DB_NAME', 'phpmq_server');
+
+define('PHPMQ_SECRET_KEY', 'secret');
+define('PHPMQ_REQUEST_TIMEOUT', 5);
+define('PHPMQ_CLIENT_TIMEOUT', 30);
+define('PHPMQ_UPDATE_INTERVAL', 1);
