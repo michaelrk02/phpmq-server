@@ -1,11 +1,34 @@
 <?php
 
+//
+// Database credentials
+//
+
 define('PHPMQ_DB_HOST', 'localhost');
+define('PHPMQ_DB_PORT', 3306);
 define('PHPMQ_DB_USER', 'admin');
 define('PHPMQ_DB_PASS', '');
 define('PHPMQ_DB_NAME', 'phpmq_server');
 
+//
+// Message queue configuration
+//
+
+// Server secret key
 define('PHPMQ_SECRET_KEY', 'secret');
+
+// Duration (in seconds) which authenticated requests remain valid before they
+// expire
 define('PHPMQ_REQUEST_TIMEOUT', 5);
+
+// Duration (in seconds) which clients remain active before they are
+// automatically deleted since the last ping time
 define('PHPMQ_CLIENT_TIMEOUT', 30);
-define('PHPMQ_UPDATE_INTERVAL', 1);
+
+// Interval (in seconds) for server to check if the connected client is still
+// active
+define('PHPMQ_PING_INTERVAL', 5);
+
+// Interval (in seconds) for server to check if there are messages to be
+// dequeued for the connected client
+define('PHPMQ_POLL_INTERVAL', 1);

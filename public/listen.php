@@ -40,34 +40,48 @@ echo 'data: '.$clientId."\n\n";
 ob_flush();
 flush();
 
+$pingCounter = 0;
+
 while (true) {
-    echo ':ping'."\n\n";
-    ob_flush();
-    flush();
-
-    if (connection_aborted()) {
-        destroyClient($clientId);
-        destroyInactiveClients();
-        destroyUnusedChannels();
-        exit;
-    }
-
-    $messages = $db->query(sprintf(
-        'SELECT * FROM `message` WHERE `client_id` = %d ORDER BY `timestamp`',
-        $clientId
-    ))->fetch_all(MYSQLI_ASSOC);
-
-    $db->query(sprintf(
-        'DELETE FROM `message` WHERE `client_id` = %d',
-        $clientId
-    ));
-
-    foreach ($messages as $message) {
-        echo 'event: '.$message['event']."\n";
-        echo 'data: '.$message['data']."\n\n";
+    if ($pingCounter === 0) {
+        echo ':ping'."\n\n";
         ob_flush();
         flush();
+
+        if (connection_aborted()) {
+            destroyClient($clientId);
+            destroyInactiveClients();
+            destroyUnusedChannels();
+            exit;
+        }
+
+        $db->query(sprintf(
+            'UPDATE `client` SET `ping_at` = NOW() WHERE `id` = %d',
+            $clientId
+        ));
     }
 
-    sleep(PHPMQ_UPDATE_INTERVAL);
+    if ($pollCounter === 0) {
+        $messages = $db->query(sprintf(
+            'SELECT * FROM `message` WHERE `client_id` = %d ORDER BY `timestamp`',
+            $clientId
+        ))->fetch_all(MYSQLI_ASSOC);
+
+        $db->query(sprintf(
+            'DELETE FROM `message` WHERE `client_id` = %d',
+            $clientId
+        ));
+
+        foreach ($messages as $message) {
+            echo 'event: '.$message['event']."\n";
+            echo 'data: '.$message['data']."\n\n";
+            ob_flush();
+            flush();
+        }
+    }
+
+    sleep(1);
+
+    $pingCounter = ($pingCounter + 1) % PHPMQ_PING_INTERVAL;
+    $pollCounter = ($pollCounter + 1) % PHPMQ_POLL_INTERVAL;
 }
