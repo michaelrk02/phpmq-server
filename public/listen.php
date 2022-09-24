@@ -55,6 +55,17 @@ while (true) {
             exit;
         }
 
+        $clientExists = $db->query(sprintf(
+            'SELECT (COUNT(*) > 0) `expr` FROM `client` WHERE `id` = %d',
+            $clientId
+        ))->fetch_assoc()['expr'];
+
+        if (!$clientExists) {
+            destroyInactiveClients();
+            destroyUnusedChannels();
+            exit;
+        }
+
         $db->query(sprintf(
             'UPDATE `client` SET `ping_at` = NOW() WHERE `id` = %d',
             $clientId
