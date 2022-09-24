@@ -27,8 +27,6 @@ if (time() >= $timestamp + PHPMQ_REQUEST_TIMEOUT) {
     exit;
 }
 
-http_response_code(200);
-
 destroyInactiveClients();
 destroyUnusedChannels();
 
@@ -44,7 +42,9 @@ foreach ($clients as $client) {
         'INSERT INTO `message` (`id`, `client_id`, `timestamp`, `event`, `data`) VALUES (%d, %d, SYSDATE(6), "%s", "%s")',
         random_int(1, PHP_INT_MAX),
         $client['id'],
-        $event,
-        $data
+        $db->real_escape_string(event),
+        $db->real_escape_string(data)
     ));
 }
+
+http_response_code(200);

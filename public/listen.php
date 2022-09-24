@@ -33,6 +33,8 @@ destroyUnusedChannels();
 initChannel($channelId);
 $clientId = initClient($channelId);
 
+http_response_code(200);
+
 echo 'event: phpmq_client_id'."\n";
 echo 'data: '.$clientId."\n\n";
 ob_flush();
