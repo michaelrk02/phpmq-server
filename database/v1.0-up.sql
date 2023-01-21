@@ -13,7 +13,7 @@ CREATE TABLE `client` (
 CREATE TABLE `message` (
     `id` BIGINT,
     `client_id` BIGINT,
-    `timestamp` DATETIME,
+    `timestamp` DATETIME(6),
     `event` VARCHAR(128),
     `data` TEXT,
     PRIMARY KEY (`id`)
